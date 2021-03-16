@@ -1,10 +1,16 @@
-import numpy
+import sys
 from matplotlib import pyplot
 from random import seed, randint
 
-import cv2
-
 from models.image import Image
+
+def on_press(event):
+    sys.stdout.flush()
+    if event.key == 'q' or event.key == 'x':
+        print("Closing window...")
+        pyplot.close(fig='all')
+        print("Exiting...")
+        sys.exit(0)
 
 def show_image(image_number="1"):
     if image_number == "1":
@@ -12,8 +18,8 @@ def show_image(image_number="1"):
     elif image_number == "2":
         grayscale_image = Image(path="./images/example.jpg", title="Grayscale", cmap="gray")
     elif image_number == "3":
-        dark_color = numpy.array([120, 68, 32])
-        light_color = numpy.array([230, 164, 129])
+        dark_color = [120, 68, 32]
+        light_color = [230, 164, 129]
         mask_image = Image(path="./images/example.jpg", title="Mask Image")
         mask_image.add_mask(dark_color, light_color)
         mask_image.apply_mask()
@@ -21,11 +27,11 @@ def show_image(image_number="1"):
         pyplot.show(block=False)
         pyplot.pause(2)
         mask_image.reset_mask()
-        dark_color = numpy.array([25, 20, 14])
-        light_color = numpy.array([135, 122, 96])
+        dark_color = [25, 20, 14]
+        light_color = [135, 122, 96]
         mask_image.add_mask(dark_color, light_color)
         mask_image.apply_mask()
-        mask_image.update_window()
+        mask_image.update_window(on_key_press=on_press)
         pyplot.pause(0) #a It's needed because of the block argument in pyplot.show(block=False)
     else:
         error_name = "ImageNumberNotFound"

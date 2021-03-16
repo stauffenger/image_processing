@@ -1,4 +1,5 @@
 import sys
+import numpy
 from matplotlib import pyplot
 
 import cv2
@@ -23,12 +24,31 @@ def key_press_event(event):
         print(f"Closing '{title}' window...")
         pyplot.close()
 
+def set_lower_and_upper_color(rgb_one, rgb_two):
+    formatted_one = numpy.uint8([[rgb_one]])
+    formatted_two = numpy.uint8([[rgb_two]])
+    hsv_one = cv2.cvtColor(formatted_one, cv2.COLOR_RGB2HSV)
+    hsv_two = cv2.cvtColor(formatted_two, cv2.COLOR_RGB2HSV)
+    lower_color = []
+    upper_color = []
+    for index in range(0, len(hsv_one[0][0])):
+        current_one = hsv_one[0][0][index]
+        current_two = hsv_two[0][0][index]
+        if current_one <= current_two:
+            lower_color.append(current_one)
+            upper_color.append(current_two)
+        else:
+            lower_color.append(current_two)
+            upper_color.append(current_one)
+    return numpy.float32(lower_color), numpy.float32(upper_color)
+
 class Image():
     def __init__(self, path=None, title="Image", cmap="rgb"):
         self._cmap = self.set_cmap(cmap)
         self._path = path
         self.title = title
         self._mask = None
+        self._connection_id = None
         self.set_image(path, cmap)
 
     def set_cmap(self, cmap):
@@ -102,13 +122,21 @@ class Image():
                     self.set_frame(self._original_frame, cmap)
             self._cmap = self.set_cmap(cmap)
     
-    def add_mask(self, dark_color, light_color):
-        mask = cv2.inRange(self._image, dark_color, light_color)
+    def add_mask(self, dark_rgb_color, light_rgb_color):
+        if self._cmap == 'rgb':
+            hsv_image = cv2.cvtColor(self._image, cv2.COLOR_RGB2HSV)
+            lower_color, upper_color = set_lower_and_upper_color(dark_rgb_color, light_rgb_color)
+            mask = cv2.inRange(hsv_image, lower_color, upper_color)
 
-        if self._mask is None:
-            self._mask = mask
+            if self._mask is None:
+                self._mask = mask
+            else:
+                self._mask = cv2.bitwise_or(self._mask, mask)
         else:
-            self._mask += mask
+            error_name = "InvalidColormap"
+            error_description = f"The Colormap {cmap} isn't valid for add mask. "
+            error_description += "Please use a rgb image."
+            raise NameError(error_name, error_description)
 
     def reset_mask(self):
         self._mask = None
@@ -126,8 +154,10 @@ class Image():
         if new:
             self._window_id = window_index()
         figure = pyplot.figure(self._window_id)
-        figure.canvas.set_window_title(self.title)
-        figure.canvas.mpl_connect("key_press_event", on_key_press)
+        figure.canvas.set_window_title(self.title)        
+        if self._connection_id is not None:
+            figure.canvas.mpl_disconnect(self._connection_id)
+        self._connection_id = figure.canvas.mpl_connect("key_press_event", on_key_press)
 
     def set_window(self, on_key_press=key_press_event):
         self.update_window(on_key_press=on_key_press, new=True)
