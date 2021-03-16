@@ -1,11 +1,11 @@
 # What is this?
 
-That's my study about image processing based on my class in college. Here I'm gonna make code examples about how to use "pyplot" and "opencv" libraries to process images and upload all the class works.
+That's my study about image processing based on my class in college. Here I'll show code examples about how to use "pyplot" and "opencv" libraries to process images and upload all the class works.
 Well, all the libraries are chosen by my teacher, but I made a change in how to use them. I switched the 'opencv-python' for the "opencv-contrib-python-headless" and because of that, I'm using "pyplot" to generate the GUI instead of "opencv" as my teacher did.
 
 ## Why use opencv contrib python headless?
 
-As said by the documentation of "opencv" on PyPi, this library has a heavy dependency chain to create GUI, and some of these dependencies are no longer supported by the "Qt" framework, and since I use Fedora, an operating system made to be up to date, I preferred to use only libraries/frameworks that still have some support. So, I chose the "opencv-contrib-python-headless" package of the library "opencv" because this package makes me able to use all the assets of the "opencv" except the ones used for generating the GUI, then I'm using the "pyplot" to generating all the necessaries GUI.
+As said by the documentation of "opencv" on PyPi, this library has a heavy dependency chain to create GUI, and some of these dependencies are no longer supported by the "Qt" framework, and since I'm using Fedora, an operating system made to be up to date, I preferred to use only libraries/frameworks that still have some support. So, I chose the "opencv-contrib-python-headless" package of the library "opencv" because this package makes me able to use all the assets of the "opencv" except the ones used for generating the GUI, then I'm using the "pyplot" to generate all the necessaries GUI.
 
 > "These packages are smaller than the two other packages above because they do not contain any GUI functionality (not compiled with Qt / other GUI components). This means that the packages avoid a heavy dependency chain to X11 libraries and you will have for example smaller Docker images as a result. You should always use these packages if you do not use cv2.imshow et al. or you are using some other package (such as PyQt) than OpenCV to create your GUI." [opencv-python 4.5.1.48 documentation on PyPi](https://pypi.org/project/opencv-python/) - Access in 03/15/2021.
 
@@ -23,7 +23,7 @@ As said by the documentation of "opencv" on PyPi, this library has a heavy depen
 
 ## How to start the program on Linux
 
-The project is divided based on the class works, which means that each work will be in a different file, and will be initialized separated.
+The project is divided based on the class works, which means that each work will be in a different file, and will be initialized separately.
 
 ### First work
 
