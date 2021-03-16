@@ -1,14 +1,13 @@
 import sys
-from matplotlib import pyplot
 from random import seed, randint
 
-from models.image import Image
+from models.image import Image, show, pause, close
 
 def on_press(event):
     sys.stdout.flush()
     if event.key == 'q' or event.key == 'x':
         print("Closing window...")
-        pyplot.close(fig='all')
+        close(fig='all')
         print("Exiting...")
         sys.exit(0)
 
@@ -24,22 +23,22 @@ def show_image(image_number="1"):
         mask_image.add_mask(dark_color, light_color)
         mask_image.apply_mask()
         mask_image.update_window()
-        pyplot.show(block=False)
-        pyplot.pause(2)
+        show(block=False)
+        pause(2)
         mask_image.reset_mask()
         dark_color = [25, 20, 14]
         light_color = [135, 122, 96]
         mask_image.add_mask(dark_color, light_color)
         mask_image.apply_mask()
         mask_image.update_window(on_key_press=on_press)
-        pyplot.pause(0) #a It's needed because of the block argument in pyplot.show(block=False)
+        pause() #a It's needed because of the block argument in show(block=False)
     else:
         error_name = "ImageNumberNotFound"
         error_description = f"The image number {image_number} was not found. "
         error_description += "Please, choose a number between the following options: '1', '2' and '3'."
         raise NameError(error_name, error_description)
 
-    pyplot.show()
+    show()
 
 if __name__ == '__main__':
     seed()

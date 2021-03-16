@@ -24,6 +24,15 @@ def key_press_event(event):
         print(f"Closing '{title}' window...")
         pyplot.close()
 
+def show(block=True):
+    pyplot.show(block=block)
+
+def pause(seconds=0):
+    pyplot.pause(seconds)
+
+def close(fig=None):
+    pyplot.close(fig=fig)
+
 def set_lower_and_upper_color(rgb_one, rgb_two):
     formatted_one = numpy.uint8([[rgb_one]])
     formatted_two = numpy.uint8([[rgb_two]])

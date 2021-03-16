@@ -1,6 +1,4 @@
-from matplotlib import pyplot
-
-from models.image import Image
+from models.image import Image, show
 
 def main():
     rgb_image = Image(path="./images/flores.jpg", title="Original Image")
@@ -13,7 +11,7 @@ def main():
     mask_image.apply_mask()
     mask_image.update_window()
 
-    pyplot.show()
+    show()
 
 if __name__ == '__main__':
     main()
