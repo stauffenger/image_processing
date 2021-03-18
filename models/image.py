@@ -58,6 +58,7 @@ class Image():
         self.title = title
         self._mask = None
         self._connection_id = None
+        self._histogram_connection_id = None
         self.set_image(path, cmap)
 
     def set_cmap(self, cmap):
@@ -126,9 +127,9 @@ class Image():
                     raise NameError(error_name, error_description)
             elif self._cmap == "gray":
                 if self._path is not None:
-                    self.set_image(self._path, cmap)
+                    self.set_image(self._path, cmap, reset_mode=True)
                 else:
-                    self.set_frame(self._original_frame, cmap)
+                    self.set_frame(self._original_frame, cmap, reset_mode=True)
             self._cmap = self.set_cmap(cmap)
     
     def add_mask(self, dark_rgb_color, light_rgb_color):
@@ -159,11 +160,50 @@ class Image():
         mask_image = cv2.bitwise_and(self._image, self._image, mask=self._mask)
         self._image = mask_image
 
+    def show_histogram(self, on_key_press=key_press_event, new=True):
+        if new:
+            self._histogram_id = window_index()
+        else:
+            pyplot.close(self._histogram_id)
+        
+        figure = pyplot.figure(self._histogram_id)
+        figure.canvas.set_window_title(f"{self.title} Histogram")
+        if self._histogram_connection_id is not None:
+            figure.canvas.mpl_disconnect(self._connection_id)
+        self._connection_id = figure.canvas.mpl_connect("key_press_event", on_key_press)
+
+        if self._cmap == "rgb":
+            blue, green, red = cv2.split(self._image)
+            
+            figure.add_subplot(1,3,1)
+            current_axis = pyplot.gca()
+            current_axis.set_title("Blue Channel")
+            pyplot.hist(blue.ravel(), 256, [0, 256], color="blue")
+
+            figure.add_subplot(1,3,2)
+            current_axis = pyplot.gca()
+            current_axis.set_title("Green Channel")
+            pyplot.hist(green.ravel(), 256, [0, 256], color="green")
+
+            figure.add_subplot(1,3,3)
+            current_axis = pyplot.gca()
+            current_axis.set_title("Red Channel")
+            pyplot.hist(red.ravel(), 256, [0, 256], color="red")
+        elif self._cmap == "gray":
+            current_axis = pyplot.gca()
+            current_axis.set_title("Grayscale Channel")
+            pyplot.hist(self._image.ravel(), 256, [0, 256], color="gray")
+
+    def update_histogram(self, on_key_press=key_press_event):
+        self.show_histogram(on_key_press=on_key_press, new=False)
+
     def window(self, on_key_press, new=True):
         if new:
             self._window_id = window_index()
+        else:
+            pyplot.close(self._window_id)
         figure = pyplot.figure(self._window_id)
-        figure.canvas.set_window_title(self.title)        
+        figure.canvas.set_window_title(self.title)      
         if self._connection_id is not None:
             figure.canvas.mpl_disconnect(self._connection_id)
         self._connection_id = figure.canvas.mpl_connect("key_press_event", on_key_press)

@@ -31,7 +31,6 @@ def show_image(image_number="1"):
         mask_image.add_mask(dark_color, light_color)
         mask_image.apply_mask()
         mask_image.update_window(on_key_press=on_press)
-        pause() #a It's needed because of the block argument in show(block=False)
     else:
         error_name = "ImageNumberNotFound"
         error_description = f"The image number {image_number} was not found. "
