@@ -173,26 +173,31 @@ class Image():
         self._connection_id = figure.canvas.mpl_connect("key_press_event", on_key_press)
 
         if self._cmap == "rgb":
-            blue, green, red = cv2.split(self._image)
+            red, green, blue = cv2.split(self._image)
             
-            figure.add_subplot(1,3,1)
+            figure.add_subplot(1,3,3)
             current_axis = pyplot.gca()
-            current_axis.set_title("Blue Channel")
-            pyplot.hist(blue.ravel(), 256, [0, 256], color="blue")
+            current_axis.set_title("Red Channel")
+            pyplot.hist(red.ravel(), 256, [0, 256], color="red")
 
             figure.add_subplot(1,3,2)
             current_axis = pyplot.gca()
             current_axis.set_title("Green Channel")
             pyplot.hist(green.ravel(), 256, [0, 256], color="green")
 
-            figure.add_subplot(1,3,3)
+            figure.add_subplot(1,3,1)
             current_axis = pyplot.gca()
-            current_axis.set_title("Red Channel")
-            pyplot.hist(red.ravel(), 256, [0, 256], color="red")
+            current_axis.set_title("Blue Channel")
+            pyplot.hist(blue.ravel(), 256, [0, 256], color="blue")
         elif self._cmap == "gray":
             current_axis = pyplot.gca()
             current_axis.set_title("Grayscale Channel")
             pyplot.hist(self._image.ravel(), 256, [0, 256], color="gray")
+        else:
+            error_name = "InvalidColormap"
+            error_description = f"The Colormap {self._cmap} isn't valid for get the histogram. "
+            error_description += "Please choose between the following options: 'rgb' or 'gray'."
+            raise NameError(error_name, error_description)
 
     def update_histogram(self, on_key_press=key_press_event):
         self.show_histogram(on_key_press=on_key_press, new=False)
