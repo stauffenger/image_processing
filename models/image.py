@@ -144,7 +144,7 @@ class Image():
                 self._mask = cv2.bitwise_or(self._mask, mask)
         else:
             error_name = "InvalidColormap"
-            error_description = f"The Colormap {cmap} isn't valid for add mask. "
+            error_description = f"The Colormap {self._cmap} isn't valid for add mask. "
             error_description += "Please use a rgb image."
             raise NameError(error_name, error_description)
 
